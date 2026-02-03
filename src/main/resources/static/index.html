@@ -1,0 +1,1428 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Be My Valentine 💖</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.96);
+      padding: 48px 36px;
+      border-radius: 24px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.18);
+      width: 480px;
+      max-width: 94%;
+      animation: popIn 0.8s ease;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    h1 { color: #ff4d6d; font-size: 28px; text-align: center; }
+    p { color: #555; font-size: 16px; text-align: center; margin-bottom: 24px; }
+
+    /* -------- GENERATOR -------- */
+    .generator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .generator input {
+      width: 100%;
+      max-width: 320px;
+      padding: 12px 18px;
+      border-radius: 30px;
+      border: 1px solid #ccc;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    .days {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      width: 100%;
+      max-width: 340px;
+    }
+
+    .day {
+      padding: 10px;
+      border-radius: 16px;
+      border: 1px solid #eee;
+      cursor: pointer;
+      text-align: center;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .day input { display: none; }
+
+    .day.active {
+      background: #ffe4ea;
+      border-color: #ff758f;
+      color: #ff4d6d;
+      font-weight: 600;
+    }
+
+    .btn {
+      padding: 14px 30px;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg,#ff4d6d,#ff758f);
+      color: #fff;
+      font-size: 15px;
+    }
+
+    .btn:hover { transform: scale(1.08); }
+
+    .link-box {
+      width: 100%;
+      max-width: 360px;
+      padding: 10px;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: inset 0 0 0 1px #eee;
+      word-break: break-all;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .share-btn { background: #25D366; }
+
+    /* -------- VALENTINE -------- */
+    .buttons {
+      position: relative;
+      height: 160px;
+      margin-top: 10px;
+    }
+
+    button.absolute {
+      position: absolute;
+      padding: 14px 30px;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      transition: left .35s, top .35s, transform .35s;
+    }
+
+    #yes {
+      background: linear-gradient(135deg,#ff4d6d,#ff758f);
+      color: white;
+      left: 40%;
+      top: 70%;
+      transform: translate(-50%,-50%);
+    }
+
+    #yes:hover { transform: translate(-50%,-50%) scale(1.18); }
+
+    #no {
+      background: #eee;
+      color: #333;
+      left: 60%;
+      top: 70%;
+      transform: translate(-50%,-50%);
+      pointer-events: none;
+    }
+
+    .heart {
+      position: fixed;
+      font-size: 20px;
+      animation: float 6s linear infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); opacity: 0; }
+      100% { transform: translateY(-100vh); opacity: 0; }
+    }
+
+    .success {
+      font-size: 22px;
+      color: #ff4d6d;
+      text-align: center;
+    }
+
+    .make-own {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .make-own a {
+      color: #ff4d6d;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .make-own a:hover { text-decoration: underline; }
+  </style>
+</head>
+
+<body>
+
+<div class="card" id="card"></div>
+
+<script>
+  const card = document.getElementById("card");
+  const params = new URLSearchParams(location.search);
+  const name = params.get("name");
+  const day = params.get("day") || "valentine";
+
+  const dayText = {
+    rose: "Happy Rose Day 🌹",
+    propose: "Happy Propose Day 💍",
+    chocolate: "Happy Chocolate Day 🍫",
+    teddy: "Happy Teddy Day 🧸",
+    promise: "Happy Promise Day 🤞",
+    hug: "Happy Hug Day 🤗",
+    kiss: "Happy Kiss Day 💋",
+    valentine: "Happy Valentine’s Day 💖"
+  };
+
+  /* -------- GENERATOR -------- */
+  if (!name) {
+    card.innerHTML = `
+      <h1>Create Your Valentine 💖</h1>
+      <p>Select a day & generate your special link ✨</p>
+
+      <div class="generator">
+        <input id="nameInput" placeholder="Partner's name" />
+
+        <div class="days">
+          ${Object.entries(dayText).map(([k,v]) =>
+            `<label class="day ${k==="valentine"?"active":""}">
+              <input type="radio" name="day" value="${k}" ${k==="valentine"?"checked":""}>
+              ${v}
+            </label>`
+          ).join("")}
+        </div>
+
+        <button class="btn" onclick="generateLink()">Generate Link 💌</button>
+        <div class="link-box" id="linkBox" style="display:none;"></div>
+        <button class="btn share-btn" id="shareBtn" style="display:none;">Share 💕</button>
+      </div>
+    `;
+
+    document.querySelectorAll(".day").forEach(d=>{
+      d.onclick=()=> {
+        document.querySelectorAll(".day").forEach(x=>x.classList.remove("active"));
+        d.classList.add("active");
+        d.querySelector("input").checked=true;
+      };
+    });
+  }
+
+  /* -------- VALENTINE -------- */
+  else {
+    card.innerHTML = `
+      <h1>${dayText[day]}</h1>
+      <p>${name}, will you be mine? 😌</p>
+
+      <div class="buttons" id="arena">
+        <button class="absolute" id="yes">Yes 💕</button>
+        <button class="absolute" id="no">No 🙃</button>
+      </div>
+    `;
+    initValentine();
+  }
+
+  function generateLink() {
+    const n = document.getElementById("nameInput").value.trim();
+    if (!n) return alert("Enter a name 😅");
+    const d = document.querySelector("input[name=day]:checked").value;
+    const url = `${location.origin}${location.pathname}?name=${encodeURIComponent(n)}&day=${d}`;
+    document.getElementById("linkBox").style.display="block";
+    document.getElementById("linkBox").textContent=url;
+    const s=document.getElementById("shareBtn");
+    s.style.display="inline-block";
+    s.onclick=()=> navigator.share ? navigator.share({url}) : navigator.clipboard.writeText(url);
+  }
+
+  function initValentine() {
+    const no=document.getElementById("no");
+    const yes=document.getElementById("yes");
+    const arena=document.getElementById("arena");
+    let can=true;
+
+    function near(x,y){
+      const r=no.getBoundingClientRect();
+      return Math.hypot(x-(r.left+r.width/2),y-(r.top+r.height/2))<90;
+    }
+    function move(){
+      no.style.left=Math.random()*(arena.clientWidth-no.offsetWidth)+"px";
+      no.style.top=Math.random()*(arena.clientHeight-no.offsetHeight)+"px";
+    }
+
+    arena.onmousemove=e=>can&&near(e.clientX,e.clientY)&&(move(),can=false,setTimeout(()=>can=true,350));
+    arena.ontouchstart=e=>can&&near(e.touches[0].clientX,e.touches[0].clientY)&&(move(),can=false,setTimeout(()=>can=true,350));
+
+    yes.onclick=()=>{
+      const baseUrl = location.origin + location.pathname;
+      const shareUrl = location.href;
+
+      card.innerHTML=`
+        <h1>YAY 💘</h1>
+        <p class="success">We knew it 😏❤️</p>
+
+        <div class="make-own">
+          <button class="btn share-btn" id="finalShareBtn">
+            Share with friends 💕
+          </button>
+
+          <div style="margin-top:14px;">
+            Want to make one for someone else?<br>
+            <a href="${baseUrl}">Create your own Valentine 💖</a>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("finalShareBtn").onclick=()=>{
+        navigator.share
+          ? navigator.share({ title:"Be My Valentine 💖", url: baseUrl })
+          : navigator.clipboard.writeText(baseUrl);
+      };
+
+      for(let i=0;i<30;i++){
+        const h=document.createElement("div");
+        h.className="heart";
+        h.textContent="❤️";
+        h.style.left=Math.random()*100+"vw";
+        document.body.appendChild(h);
+        setTimeout(()=>h.remove(),6000);
+      }
+    };
+  }
+</script>
+
+</body>
+</html> -->
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Be My Valentine 💖</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.96);
+      padding: 48px 36px;
+      border-radius: 24px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.18);
+      width: 480px;
+      max-width: 94%;
+      max-height: 92vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      animation: popIn 0.8s ease;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    h1 { color: #ff4d6d; font-size: 28px; text-align: center; }
+    p { color: #555; font-size: 16px; text-align: center; margin-bottom: 24px; }
+
+    /* -------- GENERATOR -------- */
+    .generator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .generator input {
+      width: 100%;
+      max-width: 320px;
+      padding: 12px 18px;
+      border-radius: 30px;
+      border: 1px solid #ccc;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    .days {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      width: 100%;
+      max-width: 340px;
+    }
+
+    .day {
+      padding: 10px;
+      border-radius: 16px;
+      border: 1px solid #eee;
+      cursor: pointer;
+      text-align: center;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .day input { display: none; }
+
+    .day.active {
+      background: #ffe4ea;
+      border-color: #ff758f;
+      color: #ff4d6d;
+      font-weight: 600;
+    }
+
+    .btn {
+      padding: 14px 30px;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg,#ff4d6d,#ff758f);
+      color: #fff;
+      font-size: 15px;
+    }
+
+    .btn:hover { transform: scale(1.08); }
+
+    .link-box {
+      width: 100%;
+      max-width: 360px;
+      padding: 10px;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: inset 0 0 0 1px #eee;
+      word-break: break-all;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .share-btn { background: #25D366; }
+
+    /* -------- VALENTINE -------- */
+    .buttons {
+      position: relative;
+      height: 160px;
+      margin-top: 10px;
+    }
+
+    button.absolute {
+      position: absolute;
+      padding: 14px 30px;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      transition: left .35s, top .35s, transform .35s;
+    }
+
+    #yes {
+      background: linear-gradient(135deg,#ff4d6d,#ff758f);
+      color: white;
+      left: 40%;
+      top: 70%;
+      transform: translate(-50%,-50%);
+    }
+
+    #yes:hover { transform: translate(-50%,-50%) scale(1.18); }
+
+    #no {
+      background: #eee;
+      color: #333;
+      left: 60%;
+      top: 70%;
+      transform: translate(-50%,-50%);
+      pointer-events: none;
+    }
+
+    .heart {
+      position: fixed;
+      font-size: 20px;
+      animation: float 6s linear infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); opacity: 0; }
+      100% { transform: translateY(-100vh); opacity: 0; }
+    }
+
+    .success {
+      font-size: 22px;
+      color: #ff4d6d;
+      text-align: center;
+    }
+
+    .make-own {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .make-own a {
+      color: #ff4d6d;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .make-own a:hover { text-decoration: underline; }
+  </style>
+</head>
+
+<body>
+
+<div class="card" id="card"></div>
+
+<script>
+  const card = document.getElementById("card");
+  const params = new URLSearchParams(location.search);
+  const name = params.get("name");
+  const day = params.get("day") || "valentine";
+
+  const dayText = {
+    rose: "Happy Rose Day 🌹",
+    propose: "Happy Propose Day 💍",
+    chocolate: "Happy Chocolate Day 🍫",
+    teddy: "Happy Teddy Day 🧸",
+    promise: "Happy Promise Day 🤞",
+    hug: "Happy Hug Day 🤗",
+    kiss: "Happy Kiss Day 💋",
+    valentine: "Happy Valentine’s Day 💖"
+  };
+
+  if (!name) {
+    card.innerHTML = `
+      <h1>Create Your Valentine 💖</h1>
+      <p>Select a day & generate your special link ✨</p>
+
+      <div class="generator">
+        <input id="nameInput" placeholder="Partner's name" />
+
+        <div class="days">
+          ${Object.entries(dayText).map(([k,v]) =>
+            `<label class="day ${k==="valentine"?"active":""}">
+              <input type="radio" name="day" value="${k}" ${k==="valentine"?"checked":""}>
+              ${v}
+            </label>`
+          ).join("")}
+        </div>
+
+        <button class="btn" onclick="generateLink()">Generate Link 💌</button>
+        <div class="link-box" id="linkBox" style="display:none;"></div>
+        <button class="btn share-btn" id="shareBtn" style="display:none;">Share 💕</button>
+      </div>
+    `;
+
+    document.querySelectorAll(".day").forEach(d=>{
+      d.onclick=()=> {
+        document.querySelectorAll(".day").forEach(x=>x.classList.remove("active"));
+        d.classList.add("active");
+        d.querySelector("input").checked=true;
+      };
+    });
+  } else {
+    card.innerHTML = `
+      <h1>${dayText[day]}</h1>
+      <p>${name}, will you be mine? 😌</p>
+
+      <div class="buttons" id="arena">
+        <button class="absolute" id="yes">Yes 💕</button>
+        <button class="absolute" id="no">No 🙃</button>
+      </div>
+    `;
+    initValentine();
+  }
+
+  function generateLink() {
+    const n = document.getElementById("nameInput").value.trim();
+    if (!n) return alert("Enter a name 😅");
+    const d = document.querySelector("input[name=day]:checked").value;
+    const url = `${location.origin}${location.pathname}?name=${encodeURIComponent(n)}&day=${d}`;
+    document.getElementById("linkBox").style.display="block";
+    document.getElementById("linkBox").textContent=url;
+    const s=document.getElementById("shareBtn");
+    s.style.display="inline-block";
+    s.onclick=()=> navigator.share ? navigator.share({url}) : navigator.clipboard.writeText(url);
+  }
+
+  function initValentine() {
+    const no=document.getElementById("no");
+    const yes=document.getElementById("yes");
+    const arena=document.getElementById("arena");
+    let can=true;
+
+    function near(x,y){
+      const r=no.getBoundingClientRect();
+      return Math.hypot(x-(r.left+r.width/2),y-(r.top+r.height/2))<90;
+    }
+    function move(){
+      no.style.left=Math.random()*(arena.clientWidth-no.offsetWidth)+"px";
+      no.style.top=Math.random()*(arena.clientHeight-no.offsetHeight)+"px";
+    }
+
+    arena.onmousemove=e=>can&&near(e.clientX,e.clientY)&&(move(),can=false,setTimeout(()=>can=true,350));
+    arena.ontouchstart=e=>can&&near(e.touches[0].clientX,e.touches[0].clientY)&&(move(),can=false,setTimeout(()=>can=true,350));
+
+    yes.onclick=()=>{
+      const baseUrl = location.origin + location.pathname;
+
+      card.innerHTML=`
+        <h1>YAY 💘</h1>
+        <p class="success">We knew it 😏❤️</p>
+
+        <div class="make-own">
+          <button class="btn share-btn" id="finalShareBtn">
+            Share with friends 💕
+          </button>
+
+          <div style="margin-top:14px;">
+            Want to make one for someone else?<br>
+            <a href="${baseUrl}">Create your own Valentine 💖</a>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("finalShareBtn").onclick=()=>{
+        navigator.share
+          ? navigator.share({ title:"Be My Valentine 💖", url: baseUrl })
+          : navigator.clipboard.writeText(baseUrl);
+      };
+
+      for(let i=0;i<30;i++){
+        const h=document.createElement("div");
+        h.className="heart";
+        h.textContent="❤️";
+        h.style.left=Math.random()*100+"vw";
+        document.body.appendChild(h);
+        setTimeout(()=>h.remove(),6000);
+      }
+    };
+  }
+</script>
+
+</body>
+</html> -->
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Be My Valentine 💖</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.96);
+      padding: 48px 36px;
+      border-radius: 24px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.18);
+      width: 480px;
+      max-width: 94%;
+      max-height: 92vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      animation: popIn 0.8s ease;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    h1 { color: #ff4d6d; font-size: 28px; text-align: center; }
+    p { color: #555; font-size: 16px; text-align: center; margin-bottom: 24px; }
+
+    /* -------- GENERATOR -------- */
+    .generator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .generator input {
+      width: 100%;
+      max-width: 320px;
+      padding: 12px 18px;
+      border-radius: 30px;
+      border: 1px solid #ccc;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    .days {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      width: 100%;
+      max-width: 340px;
+    }
+
+    .day {
+      padding: 10px;
+      border-radius: 16px;
+      border: 1px solid #eee;
+      cursor: pointer;
+      text-align: center;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .day input { display: none; }
+
+    .day.active {
+      background: #ffe4ea;
+      border-color: #ff758f;
+      color: #ff4d6d;
+      font-weight: 600;
+    }
+
+    .btn {
+      padding: 14px 30px;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg,#ff4d6d,#ff758f);
+      color: #fff;
+      font-size: 15px;
+    }
+
+    .btn:hover { transform: scale(1.08); }
+
+    .link-box {
+      width: 100%;
+      max-width: 360px;
+      padding: 10px;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: inset 0 0 0 1px #eee;
+      word-break: break-all;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .share-btn { background: #25D366; }
+
+    /* pulse highlight */
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255,77,109,0.6); }
+      70% { box-shadow: 0 0 0 14px rgba(255,77,109,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,77,109,0); }
+    }
+
+    .link-box.pulse {
+      animation: pulse 1.2s ease;
+    }
+
+    /* -------- VALENTINE -------- */
+    .buttons {
+      position: relative;
+      height: 160px;
+      margin-top: 10px;
+    }
+
+    button.absolute {
+      position: absolute;
+      padding: 14px 30px;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      transition: left .35s, top .35s, transform .35s;
+    }
+
+    #yes {
+      background: linear-gradient(135deg,#ff4d6d,#ff758f);
+      color: white;
+      left: 40%;
+      top: 70%;
+      transform: translate(-50%,-50%);
+    }
+
+    #yes:hover { transform: translate(-50%,-50%) scale(1.18); }
+
+    #no {
+      background: #eee;
+      color: #333;
+      left: 60%;
+      top: 70%;
+      transform: translate(-50%,-50%);
+      pointer-events: none;
+    }
+
+    .heart {
+      position: fixed;
+      font-size: 20px;
+      animation: float 6s linear infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); opacity: 0; }
+      100% { transform: translateY(-100vh); opacity: 0; }
+    }
+
+    .success {
+      font-size: 22px;
+      color: #ff4d6d;
+      text-align: center;
+    }
+
+    .make-own {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .make-own a {
+      color: #ff4d6d;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .make-own a:hover { text-decoration: underline; }
+  </style>
+</head>
+
+<body>
+
+<div class="card" id="card"></div>
+
+<script>
+  const card = document.getElementById("card");
+  const params = new URLSearchParams(location.search);
+  const name = params.get("name");
+  const day = params.get("day") || "valentine";
+
+  const dayText = {
+    rose: "Happy Rose Day 🌹",
+    propose: "Happy Propose Day 💍",
+    chocolate: "Happy Chocolate Day 🍫",
+    teddy: "Happy Teddy Day 🧸",
+    promise: "Happy Promise Day 🤞",
+    hug: "Happy Hug Day 🤗",
+    kiss: "Happy Kiss Day 💋",
+    valentine: "Happy Valentine’s Day 💖"
+  };
+
+  if (!name) {
+    card.innerHTML = `
+      <h1>Create Your Valentine 💖</h1>
+      <p>Select a day & generate your special link ✨</p>
+
+      <div class="generator">
+        <input id="nameInput" placeholder="Partner's name" />
+
+        <div class="days">
+          ${Object.entries(dayText).map(([k,v]) =>
+            `<label class="day ${k==="valentine"?"active":""}">
+              <input type="radio" name="day" value="${k}" ${k==="valentine"?"checked":""}>
+              ${v}
+            </label>`
+          ).join("")}
+        </div>
+
+        <button class="btn" onclick="generateLink()">Generate Link 💌</button>
+        <div class="link-box" id="linkBox" style="display:none;"></div>
+        <button class="btn share-btn" id="shareBtn" style="display:none;">Share 💕</button>
+      </div>
+    `;
+
+    document.querySelectorAll(".day").forEach(d=>{
+      d.onclick=()=> {
+        document.querySelectorAll(".day").forEach(x=>x.classList.remove("active"));
+        d.classList.add("active");
+        d.querySelector("input").checked=true;
+      };
+    });
+  } else {
+    card.innerHTML = `
+      <h1>${dayText[day]}</h1>
+      <p>${name}, will you be mine? 😌</p>
+
+      <div class="buttons" id="arena">
+        <button class="absolute" id="yes">Yes 💕</button>
+        <button class="absolute" id="no">No 🙃</button>
+      </div>
+    `;
+    initValentine();
+  }
+
+  function generateLink() {
+    const n = document.getElementById("nameInput").value.trim();
+    if (!n) return alert("Enter a name 😅");
+
+    const d = document.querySelector("input[name=day]:checked").value;
+    const url = `${location.origin}${location.pathname}?name=${encodeURIComponent(n)}&day=${d}`;
+
+    const linkBox = document.getElementById("linkBox");
+    const shareBtn = document.getElementById("shareBtn");
+
+    linkBox.style.display = "block";
+    linkBox.textContent = url;
+    shareBtn.style.display = "inline-block";
+
+    linkBox.classList.remove("pulse");
+    void linkBox.offsetWidth;
+    linkBox.classList.add("pulse");
+
+    setTimeout(() => {
+      linkBox.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
+
+    shareBtn.onclick = () =>
+      navigator.share
+        ? navigator.share({ url })
+        : navigator.clipboard.writeText(url);
+  }
+
+  function initValentine() {
+    const no=document.getElementById("no");
+    const yes=document.getElementById("yes");
+    const arena=document.getElementById("arena");
+    let can=true;
+
+    function near(x,y){
+      const r=no.getBoundingClientRect();
+      return Math.hypot(x-(r.left+r.width/2),y-(r.top+r.height/2))<90;
+    }
+    function move(){
+      no.style.left=Math.random()*(arena.clientWidth-no.offsetWidth)+"px";
+      no.style.top=Math.random()*(arena.clientHeight-no.offsetHeight)+"px";
+    }
+
+    arena.onmousemove=e=>can&&near(e.clientX,e.clientY)&&(move(),can=false,setTimeout(()=>can=true,350));
+    arena.ontouchstart=e=>can&&near(e.touches[0].clientX,e.touches[0].clientY)&&(move(),can=false,setTimeout(()=>can=true,350));
+
+    yes.onclick=()=>{
+      const baseUrl = location.origin + location.pathname;
+
+      card.innerHTML=`
+        <h1>YAY 💘</h1>
+        <p class="success">We knew it 😏❤️</p>
+
+        <div class="make-own">
+          <button class="btn share-btn" id="finalShareBtn">
+            Share with friends 💕
+          </button>
+
+          <div style="margin-top:14px;">
+            Want to make one for someone else?<br>
+            <a href="${baseUrl}">Create your own Valentine 💖</a>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("finalShareBtn").onclick=()=>{
+        navigator.share
+          ? navigator.share({ title:"Be My Valentine 💖", url: baseUrl })
+          : navigator.clipboard.writeText(baseUrl);
+      };
+
+      for(let i=0;i<30;i++){
+        const h=document.createElement("div");
+        h.className="heart";
+        h.textContent="❤️";
+        h.style.left=Math.random()*100+"vw";
+        document.body.appendChild(h);
+        setTimeout(()=>h.remove(),6000);
+      }
+    };
+  }
+</script>
+
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Be My Valentine 💖</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* -------- CARD -------- */
+    .card {
+      background: rgba(255,255,255,0.96);
+      margin-top: 5px;
+      padding: 48px 36px;
+      border-radius: 24px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.18);
+      width: 480px;
+      max-width: 94%;
+      max-height: 92vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      animation: popIn 0.8s ease;
+      z-index: 2;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    h1 { color: #ff4d6d; font-size: 28px; text-align: center; }
+    p { color: #555; font-size: 16px; text-align: center; margin-bottom: 18px; }
+
+    /* -------- GENERATOR -------- */
+    .generator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .generator input {
+      width: 100%;
+      max-width: 320px;
+      padding: 12px 18px;
+      border-radius: 30px;
+      border: 1px solid #ccc;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    .days {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      width: 100%;
+      max-width: 340px;
+    }
+
+    .day {
+      padding: 10px;
+      border-radius: 16px;
+      border: 1px solid #eee;
+      cursor: pointer;
+      text-align: center;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .day input { display: none; }
+
+    .day.active {
+      background: #ffe4ea;
+      border-color: #ff758f;
+      color: #ff4d6d;
+      font-weight: 600;
+    }
+
+    .btn {
+      padding: 14px 30px;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg,#ff4d6d,#ff758f);
+      color: #fff;
+      font-size: 15px;
+    }
+
+    .btn:hover { transform: scale(1.08); }
+
+    .link-box {
+      width: 100%;
+      max-width: 360px;
+      padding: 10px;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: inset 0 0 0 1px #eee;
+      word-break: break-all;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .share-btn { background: #25D366; }
+
+    /* -------- QUESTION -------- */
+    .buttons {
+      position: relative;
+      height: 160px;
+      margin-top: 10px;
+    }
+
+    button.absolute {
+      position: absolute;
+      padding: 14px 30px;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      transition: left .35s, top .35s, transform .35s;
+    }
+
+    #yes {
+      background: linear-gradient(135deg,#ff4d6d,#ff758f);
+      color: white;
+      left: 40%;
+      top: 70%;
+      transform: translate(-50%,-50%);
+    }
+
+    #no {
+      background: #eee;
+      color: #333;
+      left: 60%;
+      top: 70%;
+      transform: translate(-50%,-50%);
+      pointer-events: none;
+    }
+
+    /* -------- SUCCESS -------- */
+    .success-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .success-box img {
+      width: 180px;
+      max-width: 70%;
+      border-radius: 18px;
+    }
+
+    .secondary-link {
+      font-size: 14px;
+    }
+
+    .secondary-link a {
+      color: #ff4d6d;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .secondary-link a:hover { text-decoration: underline; }
+
+    /* -------- HEARTS -------- */
+    .heart {
+      position: fixed;
+      font-size: 20px;
+      animation: float 6s linear infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); opacity: 0; }
+      100% { transform: translateY(-100vh); opacity: 0; }
+    }
+
+    /* -------- ADS -------- */
+    .ads-section {
+      width: 100%;
+      max-width: 1100px;
+      margin: 30px auto 10px;
+      padding: 0 14px;
+    }
+
+    .ads-section h3 {
+      text-align: center;
+      color: #ff4d6d;
+      margin-bottom: 14px;
+    }
+
+    .ads-track {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 6px;
+    }
+
+    .ad-card {
+      min-width: 80px;
+      background: #fff;
+      border-radius: 18px;
+      padding: 8px;
+      text-align: center;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+      scroll-snap-align: start;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .ad-card img {
+      width: 100%;
+      border-radius: 14px;
+    }
+
+    .ad-card p {
+      font-size: 14px;
+      margin: 8px 0 4px;
+    }
+
+    .ad-card span {
+      font-size: 13px;
+      color: #ff4d6d;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .ads-track { flex-direction: column; }
+    }
+
+.falling {
+  position: fixed;
+  top: -20px;
+  pointer-events: none;
+  z-index: 9999;   /* 👈 THIS IS THE KEY */
+  animation: fall linear forwards;
+}
+
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh);
+    opacity: 0;
+  }
+}
+
+  </style>
+</head>
+
+<body>
+
+<div class="card" id="card"></div>
+
+<!-- 🔥 ADS ARE HERE (OUTSIDE CARD, UNTOUCHED) -->
+<div class="ads-section">
+  <h3>🎁 Sponsored Valentine Gifts</h3>
+  <div class="ads-track">
+    <a class="ad-card" href="https://lvl99.in/products/fit-it-all-hobo-bag" target="_blank">
+      <img src="https://lvl99.in/cdn/shop/files/59_648e5fcb-9b20-4bf9-aaeb-5b0b69d0a5ba.png?v=1757485600&width=324" referrerpolicy="no-referrer">
+      <p>Fit It All Hobo Bag</p>
+      <span>Shop Now →</span>
+    </a>
+
+    <a class="ad-card" href="https://lvl99.in/products/denim-tote-bag" target="_blank">
+      <img src="https://lvl99.in/cdn/shop/files/288.png?v=1757485655&width=324" referrerpolicy="no-referrer">
+      <p>Denim Tote Bag</p>
+      <span>Shop Now →</span>
+    </a>
+
+    <a class="ad-card" href="https://lvl99.in/products/gummy-mini" target="_blank">
+      <img src="https://lvl99.in/cdn/shop/files/184_5c1f21f3-8cf0-4396-9ec4-703ff1e6b863.png?v=1757485794&width=324" referrerpolicy="no-referrer">
+      <p>Gummy Mini</p>
+      <span>Shop Now →</span>
+    </a>
+  </div>
+</div>
+
+<script>
+  function startFallingHearts(symbol = "❤️", density = 800) {
+  setInterval(() => {
+    const heart = document.createElement("div");
+    heart.className = "falling";
+    heart.textContent = symbol;
+
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = 4 + Math.random() * 4 + "s";
+    heart.style.fontSize = 14 + Math.random() * 10 + "px";
+
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 8000);
+  }, density);
+}
+
+// 🌧️ START HEART RAIN ALWAYS
+startFallingHearts("❤️", 200);
+
+  const card = document.getElementById("card");
+  const params = new URLSearchParams(location.search);
+  const name = params.get("name");
+  const day = params.get("day") || "valentine";
+
+  const dayText = {
+    rose: "Happy Rose Day 🌹",
+    propose: "Happy Propose Day 💍",
+    chocolate: "Happy Chocolate Day 🍫",
+    teddy: "Happy Teddy Day 🧸",
+    promise: "Happy Promise Day 🤞",
+    hug: "Happy Hug Day 🤗",
+    kiss: "Happy Kiss Day 💋",
+    valentine: "Happy Valentine’s Day 💖"
+  };
+
+  if (!name) {
+    card.innerHTML = `
+      <h1>Create Your Valentine 💖</h1>
+      <p>Select a day & generate your special link ✨</p>
+
+      <div class="generator">
+        <input id="nameInput" placeholder="Partner's name" />
+
+        <div class="days">
+          ${Object.entries(dayText).map(([k,v]) =>
+            `<label class="day ${k==="valentine"?"active":""}">
+              <input type="radio" name="day" value="${k}" ${k==="valentine"?"checked":""}>
+              ${v}
+            </label>`
+          ).join("")}
+        </div>
+
+        <button class="btn" onclick="generateLink()">Generate Link 💌</button>
+        <div class="link-box" id="linkBox" style="display:none;"></div>
+        <button class="btn share-btn" id="shareBtn" style="display:none;">Share 💕</button>
+      </div>
+    `;
+
+    document.querySelectorAll(".day").forEach(d=>{
+      d.onclick=()=> {
+        document.querySelectorAll(".day").forEach(x=>x.classList.remove("active"));
+        d.classList.add("active");
+        d.querySelector("input").checked=true;
+      };
+    });
+  } else {
+    card.innerHTML = `
+      <h1>${dayText[day]}</h1>
+      <p>${name}, will you be mine? 😌</p>
+
+      <div class="buttons" id="arena">
+        <button class="absolute" id="yes">Yes 💕</button>
+        <button class="absolute" id="no">No 🙃</button>
+      </div>
+    `;
+    initValentine();
+  }
+
+  function generateLink() {
+    const n = document.getElementById("nameInput").value.trim();
+    if (!n) return alert("Enter a name 😅");
+
+    const d = document.querySelector("input[name=day]:checked").value;
+    const url = `${location.origin}${location.pathname}?name=${encodeURIComponent(n)}&day=${d}`;
+
+    const linkBox = document.getElementById("linkBox");
+    const shareBtn = document.getElementById("shareBtn");
+
+    linkBox.style.display = "block";
+    linkBox.textContent = url;
+    shareBtn.style.display = "inline-block";
+
+    shareBtn.onclick = () =>
+      navigator.share
+        ? navigator.share({ url })
+        : navigator.clipboard.writeText(url);
+  }
+
+  function initValentine() {
+    const no=document.getElementById("no");
+    const yes=document.getElementById("yes");
+    const arena=document.getElementById("arena");
+    let can=true;
+
+    function near(x,y){
+      const r=no.getBoundingClientRect();
+      return Math.hypot(x-(r.left+r.width/2),y-(r.top+r.height/2))<90;
+    }
+    function move(){
+      no.style.left=Math.random()*(arena.clientWidth-no.offsetWidth)+"px";
+      no.style.top=Math.random()*(arena.clientHeight-no.offsetHeight)+"px";
+    }
+
+    arena.onmousemove=e=>can&&near(e.clientX,e.clientY)&&(move(),can=false,setTimeout(()=>can=true,350));
+    arena.ontouchstart=e=>can&&near(e.touches[0].clientX,e.touches[0].clientY)&&(move(),can=false,setTimeout(()=>can=true,350));
+
+    yes.onclick=()=>{
+      const baseUrl = location.origin + location.pathname;
+
+      card.innerHTML=`
+        <h1>YAY 💘</h1>
+
+        <div class="success-box">
+          <img src="https://storage.googleapis.com/noffle-images-all/bubudubu.gif" alt="Bubu Dudu Love">
+          <p>We knew it 😏❤️</p>
+
+          <button class="btn share-btn" id="finalShareBtn">
+            Share with friends 💕
+          </button>
+
+          <div class="secondary-link">
+            Want to make one for someone else?
+            <a href="${baseUrl}">Create your own Valentine 💖</a>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("finalShareBtn").onclick=()=>{
+        navigator.share
+          ? navigator.share({ title:"Be My Valentine 💖", url: baseUrl })
+          : navigator.clipboard.writeText(baseUrl);
+      };
+
+      for(let i=0;i<30;i++){
+        const h=document.createElement("div");
+        h.className="heart";
+        h.textContent="❤️";
+        h.style.left=Math.random()*100+"vw";
+        document.body.appendChild(h);
+        setTimeout(()=>h.remove(),6000);
+      }
+    };
+  }
+</script>
+
+</body>
+</html>

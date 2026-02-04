@@ -1110,6 +1110,7 @@
       border: none;
       cursor: pointer;
       transition: left .35s, top .35s, transform .35s;
+      touch-action: manipulation;
     }
 
     #yes {
@@ -1244,6 +1245,9 @@
 <body>
 
 <div class="card" id="card"></div>
+<audio id="bgMusic" loop>
+  <source src="https://storage.googleapis.com/noffle-images-all/ishq.mp3" type="audio/mpeg">
+</audio>
 
 <!-- 🔥 ADS ARE HERE (OUTSIDE CARD, UNTOUCHED) -->
 <div class="ads-section">
@@ -1423,6 +1427,46 @@ startFallingHearts("❤️", 200);
     };
   }
 </script>
+<script>
+/* 🔒 Mobile click-loss fix — does NOT change logic */
+document.addEventListener("touchend", function (e) {
+  const yes = document.getElementById("yes");
+  if (!yes) return;
+
+  if (e.target === yes || yes.contains(e.target)) {
+    e.preventDefault();
+    yes.click();
+  }
+}, { passive: false });
+</script>
 
 </body>
+<script>
+(function () {
+  let started = false;
+
+  function startMusic() {
+    if (started) return;
+    started = true;
+
+    const audio = document.getElementById("bgMusic");
+    if (!audio) return;
+
+    audio.volume = 0.4;
+    audio.play().catch(() => {
+      // In case browser still blocks, user can tap again
+      started = false;
+    });
+
+    // Remove listeners after first successful attempt
+    document.removeEventListener("click", startMusic);
+    document.removeEventListener("touchstart", startMusic);
+  }
+
+  // Capture ANY first interaction on the page
+  document.addEventListener("click", startMusic, true);
+  document.addEventListener("touchstart", startMusic, true);
+})();
+</script>
+
 </html>
